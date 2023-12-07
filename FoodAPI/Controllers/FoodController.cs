@@ -19,19 +19,19 @@ namespace FoodAPI.Controllers
         public async Task<IActionResult> GetRecipeList()
         {
             var data = await _recipeRepository.GetAllActiveRecipes();
-            return Ok(new ApiResponse<List<RecipeDetails>>
+            return Ok(JsonConvert.SerializeObject(new ApiResponse<List<RecipeDetails>>
             {
                 Result = data
-            });
+            }));
         }
         [HttpPost("GetRecipeById")]
         public async Task<IActionResult> GetRecipeById(KeyValues kv)
         {
             var data = await _recipeRepository.GetActiveRecipeById(kv.value??0);
-            return Ok(new ApiResponse<RecipeDetails>
+            return Ok(JsonConvert.SerializeObject(new ApiResponse<RecipeDetails>
             {
                 Result = data
-            });
+            }));
         }
         [HttpPost("SaveRecipe")]
         public async Task<IActionResult> SaveRecipe(RecipeDetails request)
