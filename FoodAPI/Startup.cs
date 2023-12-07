@@ -30,20 +30,22 @@ namespace WatchList
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            
+            services.AddDbContext<FoodDbContext>(x => x.UseSqlServer(Configuration.GetSection("ConnectionStrings").GetSection("FoodDb").Value).EnableSensitiveDataLogging());
+            services.AddCors(options =>
+            {
+                options.AddPolicy(name: "FoodPolicy",
+               policy =>
+               {
+                   policy.AllowAnyOrigin().AllowAnyHeader().WithMethods("POST");
+               });
+            });
             services.AddMvc();
             services.AddDistributedMemoryCache();
             services.AddControllers();
 
             services.AddEndpointsApiExplorer();
             services.AddSwaggerGen();
-            services.AddCors(options =>
-            {
-                options.AddPolicy(name: "FoodPolicy",
-                                  policy =>
-                                  {
-                                      policy.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod();
-                                  });
-            });
             //services.AddSession(options =>
             //{
             //    options.IdleTimeout = TimeSpan.FromHours(24);
@@ -58,7 +60,7 @@ namespace WatchList
             //});
 
             //services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme).AddCookie();
-            services.AddDbContext<FoodDbContext>(x => x.UseSqlServer(Configuration.GetSection("ConnectionStrings").GetSection("FoodDb").Value).EnableSensitiveDataLogging());
+
             services.AddScoped<DbContext, FoodDbContext>();
             services.AddScoped<IRecipeRepository, RecipeRepository>();
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
@@ -81,7 +83,7 @@ namespace WatchList
             }
             app.UseHttpsRedirection();
             app.UseStaticFiles();
-
+            app.UseCors("FoodPolicy");
             app.UseRouting();
             app.UseMiddleware<ExceptionHandler>();
             app.UseAuthorization();
