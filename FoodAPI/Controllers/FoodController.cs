@@ -94,10 +94,11 @@ namespace FoodAPI.Controllers
         public async Task<IActionResult> ChangeFav(KeyValues kv)
         {
             var result = await _recipeRepository.ChangeFav(kv.value??0,kv.key!);
-            return Ok(new ApiResponse<bool>
+            return Ok(JsonConvert.SerializeObject(new ApiResponse<bool>
             {
+                Success=result,
                 Result = result,
-            });
+            }));
         }
     }
 }
