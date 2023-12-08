@@ -42,12 +42,12 @@ namespace FoodAPI.Controllers
                 if (recipe?.ID == 0) request.ID = await _recipeRepository.AddRecipe(recipe);
                 else request.ID = await _recipeRepository.UpdateRecipe(recipe!);
                 var result = await _recipeRepository.InsertOrUpdateIngredients(request.Ingredients, request.ID);
-                return Ok(new ApiResponse<bool>
+                return Ok(JsonConvert.SerializeObject(new ApiResponse<bool>
                 {
                     Result = result,
                     Success = result,
                     Message = $"Saving recipe {(result ? "" : "un")}successful"
-                });
+                }));
             }
             catch(Exception ex)
             {
