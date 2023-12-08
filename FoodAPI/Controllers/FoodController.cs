@@ -85,10 +85,10 @@ namespace FoodAPI.Controllers
         public async Task<IActionResult> GetFavourites()
         {
             var result = await _recipeRepository.GetAllFavouriteRecipes();
-            return Ok(new ApiResponse<List<RecipeDetails>>
+            return Ok(JsonConvert.SerializeObject(new ApiResponse<List<RecipeDetails>>
             {
                 Result = result,
-            });
+            }));
         }
         [HttpPost("ChangeFav")]
         public async Task<IActionResult> ChangeFav(KeyValues kv)
