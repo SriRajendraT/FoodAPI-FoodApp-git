@@ -12,9 +12,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using FoodAPI.Database;
-using FoodAPI.IRepositories;
-using FoodAPI.Repositories;
 using FoodAPI.Helpers;
+using FoodAPI.Repositories.classes;
+using FoodAPI.Repositories;
+using FoodAPI.Repositories.interfaces;
 
 namespace WatchList
 {
@@ -31,14 +32,14 @@ namespace WatchList
         public void ConfigureServices(IServiceCollection services)
         {
             
-            services.AddDbContext<FoodDbContext>(x => x.UseSqlServer(Configuration.GetSection("ConnectionStrings").GetSection("FoodDb").Value).EnableSensitiveDataLogging());
+            //services.AddDbContext<FoodDbContext>(x => x.UseSqlServer(Configuration.GetSection("ConnectionStrings").GetSection("FoodDb").Value).EnableSensitiveDataLogging());
             services.AddCors(options =>
             {
                 options.AddPolicy(name: "FoodPolicy",
-               policy =>
-               {
-                   policy.AllowAnyOrigin().AllowAnyHeader().WithMethods("POST");
-               });
+                    policy =>
+                    {
+                        policy.WithOrigins(Configuration.GetSection("AllowedHosts").Value?.Split(";")!).AllowAnyHeader().WithMethods("POST");
+                    });
             });
             services.AddMvc();
             services.AddDistributedMemoryCache();
@@ -61,9 +62,11 @@ namespace WatchList
 
             //services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme).AddCookie();
 
-            services.AddScoped<DbContext, FoodDbContext>();
-            services.AddScoped<IRecipeRepository, RecipeRepository>();
-            services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+            //services.AddScoped<DbContext, FoodDbContext>();
+            //services.AddScoped<IRecipeRepository, RecipeRepository>();
+            //services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+            services.Registor(Configuration);
+            services.Inject();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

@@ -2,7 +2,7 @@
 {
     public class RecipeDetails:Recipe
     {
-        public RecipeImage recipe_image { get; set; }
+        public string? Image { get; set; }
         public int TotalIngredients { get; set; }
         public List<Ingredient> Ingredients { get; set; }
 
